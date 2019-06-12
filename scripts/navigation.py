@@ -10,17 +10,19 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from std_msgs.msg import Header, String
 from geometry_msgs.msg import Point, Quaternion
 from location.srv import *
+from sound_system.srv import *
 
 
 class Navigation:
 
     def __init__(self):
+        self.speak_topic = "/sound_system/speak"
+
         rospy.init_node('navigation', anonymous=False)
         rospy.Subscriber("/navigation/move_command", Location, self.navigation_callback)
         rospy.spin()
 
-    @staticmethod
-    def navigation_callback(message):
+    def navigation_callback(self, message):
         # type: (Location) -> None
         """
         移動命令を受け取って実際にmove_baseに移動命令をアクションで送る
@@ -50,9 +52,15 @@ class Navigation:
             client.wait_for_result()
             if client.get_state() == GoalStatus.SUCCEEDED:
                 print("SUCCEEDED")
+                answer = "I arrived at the target point"
+                rospy.wait_for_service(self.speak_topic)
+                rospy.ServiceProxy(self.speak_topic, StringService)(answer)
             if client.get_state() == GoalStatus.ABORTED:
                 # orientationのw値が0だとこっちが即返ってくる
                 print("ABORTED")
+                answer = "Sorry, I can't arrived at the target point"
+                rospy.wait_for_service(self.speak_topic)
+                rospy.ServiceProxy(self.speak_topic, StringService)(answer)
         except rospy.ServiceException as e:
             rospy.ERROR(e)
 
