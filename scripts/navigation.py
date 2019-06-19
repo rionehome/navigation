@@ -7,7 +7,7 @@ from actionlib_msgs.msg import GoalID
 from actionlib_msgs.msg import GoalStatus
 from location.msg import Location
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-from std_msgs.msg import Header, String
+from std_msgs.msg import Header, String, Bool
 from geometry_msgs.msg import Point, Quaternion
 from location.srv import *
 from sound_system.srv import *
@@ -20,6 +20,7 @@ class Navigation:
 
         rospy.init_node('navigation', anonymous=False)
         rospy.Subscriber("/navigation/move_command", Location, self.navigation_callback)
+        self.result_publisher = rospy.Publisher("/navigation/goal", Bool)
         rospy.spin()
 
     def navigation_callback(self, message):
@@ -52,12 +53,14 @@ class Navigation:
             client.wait_for_result()
             if client.get_state() == GoalStatus.SUCCEEDED:
                 print("SUCCEEDED")
+                self.result_publisher.publish(True)
                 answer = "I arrived at the target point"
                 rospy.wait_for_service(self.speak_topic)
                 rospy.ServiceProxy(self.speak_topic, StringService)(answer)
-            if client.get_state() == GoalStatus.ABORTED:
+            elif client.get_state() == GoalStatus.ABORTED:
                 # orientationのw値が0だとこっちが即返ってくる
                 print("ABORTED")
+                self.result_publisher.publish(False)
                 answer = "Sorry, I can't arrived at the target point"
                 rospy.wait_for_service(self.speak_topic)
                 rospy.ServiceProxy(self.speak_topic, StringService)(answer)
