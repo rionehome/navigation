@@ -20,7 +20,7 @@ class Navigation:
 
         rospy.init_node('navigation', anonymous=False)
         rospy.Subscriber("/navigation/move_command", Location, self.navigation_callback)
-        self.result_publisher = rospy.Publisher("/navigation/goal", Bool)
+        self.result_publisher = rospy.Publisher("/navigation/goal", Bool, queue_size=10)
         rospy.spin()
 
     def navigation_callback(self, message):
