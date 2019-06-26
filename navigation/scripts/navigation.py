@@ -24,8 +24,8 @@ class Navigation:
 		rospy.spin()
 
 	def navigation_callback(self, message):
-		print message, "@navigation_callback"
 		# type: (Location) -> None
+		print message, "@navigation_callback"
 		"""
 		移動命令を受け取って実際にmove_baseに移動命令をアクションで送る
 		:param message: 場所情報
@@ -56,17 +56,17 @@ class Navigation:
 			client.wait_for_result()
 			if client.get_state() == GoalStatus.SUCCEEDED:
 				print("SUCCEEDED")
-				self.result_publisher.publish(True)
 				answer = "I arrived at the target point"
 				rospy.wait_for_service(self.speak_topic)
 				rospy.ServiceProxy(self.speak_topic, StringService)(answer)
+				self.result_publisher.publish(True)
 			elif client.get_state() == GoalStatus.ABORTED:
 				# orientationのw値が0だとこっちが即返ってくる
 				print("ABORTED")
-				self.result_publisher.publish(False)
 				answer = "Sorry, I can't arrived at the target point"
 				rospy.wait_for_service(self.speak_topic)
 				rospy.ServiceProxy(self.speak_topic, StringService)(answer)
+				self.result_publisher.publish(False)
 		except rospy.ServiceException as e:
 			rospy.ERROR(e)
 
