@@ -25,7 +25,7 @@ class Navigation:
 
 	def navigation_callback(self, message):
 		# type: (Location) -> None
-		print message, "@navigation_callback"
+		print(message, "@navigation_callback")
 		"""
 		移動命令を受け取って実際にmove_baseに移動命令をアクションで送る
 		:param message: 場所情報
@@ -35,9 +35,9 @@ class Navigation:
 			# 接続要求
 			# gmapping か amcl が立ち上げっていれば繋がる
 			client = actionlib.SimpleActionClient("/move_base", MoveBaseAction)
-			print "wait move_base server"
+			print("wait move_base server")
 			client.wait_for_server()
-			print "callback move_base"
+			print("callback move_base")
 			# データの作成
 			# ただしなぜかは不明だが orientation(型はOrientation)の初期値は(0,0,0,0)だがこれだと動かない (原因は不明)
 			# 必ず w の値を0以外に設定する
@@ -48,7 +48,7 @@ class Navigation:
 			goal.target_pose.pose.orientation = Quaternion(0, 0, 0, 1)
 
 			# データの送信
-			print "send place msg @navigation"
+			print("send place msg @navigation")
 			client.send_goal(goal)
 
 			# データ送信後アクションサーバーからの返答待ち
