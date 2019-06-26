@@ -25,12 +25,12 @@ class Navigation:
 
 	def navigation_callback(self, message):
 		# type: (Location) -> None
-		print(message, "@navigation_callback")
 		"""
 		移動命令を受け取って実際にmove_baseに移動命令をアクションで送る
 		:param message: 場所情報
 		:return: なし
 		"""
+		print(message, "@navigation_callback")
 		try:
 			# 接続要求
 			# gmapping か amcl が立ち上げっていれば繋がる
