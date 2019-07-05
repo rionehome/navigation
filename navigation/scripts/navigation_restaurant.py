@@ -14,6 +14,7 @@ from sound_system.srv import *
 from std_msgs.msg import Float64
 from tf.msg import tfMessage
 import math
+from rviz_marker import RvizMarker
 
 
 class NavigationHumanDetect:
@@ -26,6 +27,7 @@ class NavigationHumanDetect:
         rospy.Subscriber("/navigation_human_detect/move_command", Float64, self.navigation_callback)
         rospy.Subscriber("/tf", tfMessage, self.subscribe_location_tf)
         self.result_publisher = rospy.Publisher("/navigation_human_detect/goal", Bool, queue_size=10)
+        self.rviz = RvizMarker()
         rospy.spin()
 
     def subscribe_location_tf(self, message):
@@ -83,6 +85,7 @@ class NavigationHumanDetect:
             goal.target_pose.header.stamp = rospy.Time.now()
             goal.target_pose.header.frame_id = "map"
             goal.target_pose.pose = self.calc(transform, message.data)
+            self.rviz.register(goal.target_pose.pose)
             # データの送信
             print("send place msg @navigation")
             client.send_goal(goal)
