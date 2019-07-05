@@ -47,7 +47,7 @@ class NavigationHumanDetect:
             angle *= -1
 
         # 多分間違ってる
-        x = translation.x + range * math.cos(angle) - 0.2
+        x = translation.x + range * math.cos(angle) - 0.4
         y = translation.y + range * math.sin(angle)
 
         pose = Pose()

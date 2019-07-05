@@ -1,6 +1,6 @@
 <launch>
 
-  <node pkg="navigation" name="navigation" type="navigation_human_detect.py" output="screen">
+  <node pkg="navigation" name="navigation_restaurant" type="navigation_restaurant.py" output="screen">
   </node>
 
 </launch>
