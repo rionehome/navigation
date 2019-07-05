@@ -48,7 +48,7 @@ class NavigationHumanDetect:
         if rotation.z < 0:
             angle *= -1
 
-        x = translation.x + range * math.cos(angle) - 0.4
+        x = translation.x + range * math.cos(angle) - 1.0
         y = translation.y + range * math.sin(angle)
 
         pose = Pose()
