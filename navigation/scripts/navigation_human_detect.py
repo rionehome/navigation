@@ -14,6 +14,7 @@ from sound_system.srv import *
 from std_msgs.msg import Float64
 from tf.msg import tfMessage
 import math
+from rviz_marker import RvizMarker
 
 
 class NavigationHumanDetect:
@@ -21,6 +22,7 @@ class NavigationHumanDetect:
     def __init__(self):
 
         self.transform = None
+        self.rviz = RvizMarker()
 
         rospy.init_node('navigation', anonymous=False)
         rospy.Subscriber("/navigation_human_detect/move_command", Float64, self.navigation_callback)
@@ -42,13 +44,15 @@ class NavigationHumanDetect:
     def calc(self, transform, range):
         translation = transform.translation
         rotation = transform.rotation
-        angle = 2 * math.acos(transform.w)
+        angle = 2 * math.acos(rotation.w)
+        print(angle * 180)
         if rotation.z < 0:
             angle *= -1
 
         # 多分間違ってる
         x = translation.x + range * math.cos(angle)
         y = translation.y + range * math.sin(angle)
+        print(x, y)
 
         pose = Pose()
         pose.position = Point(x, y, translation.z)
@@ -87,7 +91,8 @@ class NavigationHumanDetect:
             goal.target_pose.header.stamp = rospy.Time.now()
             goal.target_pose.header.frame_id = "map"
             goal.target_pose.pose = self.calc(transform, message.data)
-
+            self.rviz.register(goal.target_pose.pose)
+            #return
             # データの送信
             print("send place msg @navigation")
             client.send_goal(goal)
@@ -97,13 +102,9 @@ class NavigationHumanDetect:
             client.wait_for_result()
             if client.get_state() == GoalStatus.SUCCEEDED:
                 print("SUCCEEDED")
-                rospy.wait_for_service(self.speak_topic)
-                self.result_publisher.publish(True)
             elif client.get_state() == GoalStatus.ABORTED:
                 # orientationのw値が0だとこっちが即返ってくる
                 print("ABORTED")
-                rospy.wait_for_service(self.speak_topic)
-                self.result_publisher.publish(False)
         except rospy.ServiceException as e:
             rospy.ERROR(e)
 
