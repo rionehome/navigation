@@ -97,12 +97,10 @@ class NavigationHumanDetect:
             client.wait_for_result()
             if client.get_state() == GoalStatus.SUCCEEDED:
                 print("SUCCEEDED")
-                rospy.wait_for_service(self.speak_topic)
                 self.result_publisher.publish(True)
             elif client.get_state() == GoalStatus.ABORTED:
                 # orientationのw値が0だとこっちが即返ってくる
                 print("ABORTED")
-                rospy.wait_for_service(self.speak_topic)
                 self.result_publisher.publish(False)
         except rospy.ServiceException as e:
             rospy.ERROR(e)
