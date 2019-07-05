@@ -42,7 +42,7 @@ class NavigationHumanDetect:
     def calc(self, transform, range):
         translation = transform.translation
         rotation = transform.rotation
-        angle = 2 * math.acos(transform.w)
+        angle = 2 * math.acos(rotation.w)
         if rotation.z < 0:
             angle *= -1
 
