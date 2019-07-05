@@ -46,7 +46,6 @@ class NavigationHumanDetect:
         if rotation.z < 0:
             angle *= -1
 
-        # 多分間違ってる
         x = translation.x + range * math.cos(angle) - 0.4
         y = translation.y + range * math.sin(angle)
 
@@ -80,14 +79,10 @@ class NavigationHumanDetect:
             # ただしなぜかは不明だが orientation(型はOrientation)の初期値は(0,0,0,0)だがこれだと動かない (原因は不明)
             # 必ず w の値を0以外に設定する
 
-            translation = transform.translation
-            rotation = transform.rotation
-
             goal = MoveBaseGoal()
             goal.target_pose.header.stamp = rospy.Time.now()
             goal.target_pose.header.frame_id = "map"
             goal.target_pose.pose = self.calc(transform, message.data)
-
             # データの送信
             print("send place msg @navigation")
             client.send_goal(goal)
@@ -102,6 +97,7 @@ class NavigationHumanDetect:
                 # orientationのw値が0だとこっちが即返ってくる
                 print("ABORTED")
                 self.result_publisher.publish(False)
+
         except rospy.ServiceException as e:
             rospy.ERROR(e)
 

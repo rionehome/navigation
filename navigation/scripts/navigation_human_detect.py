@@ -40,6 +40,7 @@ class NavigationHumanDetect:
                 self.transform = transform.transform
 
     def calc(self, transform, range):
+        range -= 0.2
         translation = transform.translation
         rotation = transform.rotation
         angle = 2 * math.acos(rotation.w)
@@ -47,7 +48,6 @@ class NavigationHumanDetect:
         if rotation.z < 0:
             angle *= -1
 
-        # 多分間違ってる
         x = translation.x + range * math.cos(angle)
         y = translation.y + range * math.sin(angle)
         print(x, y)
@@ -81,9 +81,6 @@ class NavigationHumanDetect:
             # データの作成
             # ただしなぜかは不明だが orientation(型はOrientation)の初期値は(0,0,0,0)だがこれだと動かない (原因は不明)
             # 必ず w の値を0以外に設定する
-
-            translation = transform.translation
-            rotation = transform.rotation
 
             goal = MoveBaseGoal()
             goal.target_pose.header.stamp = rospy.Time.now()
