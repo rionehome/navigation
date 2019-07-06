@@ -94,7 +94,7 @@ class NavigationHumanDetect:
 
             # データ送信後アクションサーバーからの返答待ち
             # 失敗にしろ成功にしろ結果は返ってくるのでタイムアウトの必要はなし
-            client.wait_for_result(rospy.Duration.from_sec(10.0))
+            client.wait_for_result()
             if client.get_state() == GoalStatus.SUCCEEDED:
                 print("SUCCEEDED")
                 self.result_publisher.publish(True)
