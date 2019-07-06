@@ -54,7 +54,8 @@ class NavigationHumanDetect:
 
         pose = Pose()
         pose.position = Point(x, y, translation.z)
-        pose.orientation = Quaternion(rotation.x, rotation.y, rotation.z, rotation.w)
+        #pose.orientation = Quaternion(rotation.x, rotation.y, rotation.z, rotation.w)
+        pose.orientation = Quaternion(0, 0, 0, 1)
         return pose
 
     def navigation_callback(self, message):
