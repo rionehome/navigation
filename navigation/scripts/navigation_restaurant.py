@@ -42,14 +42,14 @@ class NavigationHumanDetect:
                 self.transform = transform.transform
 
     def calc(self, transform, range):
-        range -= 0.6
+        range -= 0.1
         translation = transform.translation
         rotation = transform.rotation
         angle = 2 * math.acos(rotation.w)
         if rotation.z < 0:
             angle *= -1
 
-        x = translation.x + range * math.cos(angle) - 0.3
+        x = translation.x + range * math.cos(angle) - 0.7
         y = translation.y + range * math.sin(angle)
 
         pose = Pose()
